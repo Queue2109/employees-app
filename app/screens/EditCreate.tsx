@@ -89,16 +89,14 @@ const EditCreate: React.FC<EditCreateNavigationProp> = ({
 
   return (
     <View style={styles.container}>
+      <View style={styles.header}>
+        {create ? (
+          <Text style={styles.headerText}>Create new employee</Text>
+        ) : (
+          <Text style={styles.headerText}>Edit {newEmployee.name}'s data</Text>
+        )}
+      </View>
       <View style={styles.body}>
-        <View style={styles.header}>
-          {create ? (
-            <Text style={styles.headerText}>Create new employee</Text>
-          ) : (
-            <Text style={styles.headerText}>
-              Edit {newEmployee.name}'s data
-            </Text>
-          )}
-        </View>
         <View>
           <Text style={styles.bodyTextLeft}>First Name:</Text>
           <TextInput
@@ -169,14 +167,16 @@ const styles = StyleSheet.create({
     paddingVertical: 50,
     justifyContent: "space-between",
     backgroundColor: Colors.darkBeige,
-    paddingTop: "40%",
   },
   header: {
-    marginBottom: 40,
+    padding: 20,
+    margin: 20,
+    marginBottom: 0,
+    borderRadius: 10,
+    backgroundColor: Colors.lightBlue
   },
   headerText: {
     fontSize: 32,
-    marginTop: 15,
     fontWeight: "bold",
     textAlign: "center",
     color: Colors.darkBlue,
@@ -186,11 +186,11 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.lightBlue,
     padding: 20,
     borderRadius: 10,
-    // height: "75%",
+    // marginTop: 0,
   },
   bodyTextLeft: {
     fontSize: 16,
-    color: Colors.darkBeige,
+    color: Colors.darkBlue,
   },
   bodyTextInput: {
     fontSize: 16,

@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
 
   genderText: {
     fontSize: 18,
-    color: Colors.darkBlue,
+    color: Colors.yellow,
     marginTop: 24,
   },
 

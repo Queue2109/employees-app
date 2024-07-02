@@ -9,7 +9,7 @@ import {
 import React, { useCallback, useEffect, useState } from "react";
 import { Employee, HomeNavigationProp } from "../types";
 import { db } from "../firebaseInit";
-import { get, ref, remove } from "firebase/database";
+import { get, ref, remove, set } from "firebase/database";
 import { useFocusEffect } from "@react-navigation/native";
 import { Snackbar } from "react-native-paper";
 import Icon from "react-native-vector-icons/Entypo";
@@ -37,8 +37,6 @@ const Home: React.FC<HomeNavigationProp> = ({ navigation }) => {
             id: key,
           }));
           setEmployees(employees);
-        } else {
-          console.log("No employees yet");
         }
       })
       .catch((error) => {
@@ -58,22 +56,45 @@ const Home: React.FC<HomeNavigationProp> = ({ navigation }) => {
     setTempEmployee(employee);
     setTempEmployeeId(employee.id!);
 
+    // Immediately update local state to remove the employee
     setEmployees((prevEmployees) =>
       prevEmployees.filter((emp) => emp.id !== employee.id)
     );
 
+    // Immediately remove from the database
+    remove(ref(db, `employees/${employee.id}`))
+      .catch((error) => {
+        console.error("Error deleting employee: ", error);
+        // If there's an error deleting, add back the employee locally
+        setEmployees((prevEmployees) => [...prevEmployees, employee]);
+        Alert.alert(
+          "Deletion failed",
+          "Failed to delete employee from the database."
+        );
+      });
+
+    // Start a timeout for the undo functionality
     setTimeout(() => {
       if (visible) {
-        remove(ref(db, `employees/${tempEmployeeId}`))
-          .then(() => {
-            console.log("Employee deleted successfully");
-            setVisible(false);
-          })
-          .catch((error) => {
-            console.error("Error deleting employee: ", error);
-          });
+        setVisible(false);
       }
     }, 2000);
+  };
+
+  const undoDelete = () => {
+    if (tempEmployee && tempEmployeeId) {
+      // Add the employee back to the database
+      set(ref(db, `employees/${tempEmployeeId}`), tempEmployee)
+        .then(() => console.log("Employee recovery successful"))
+        .catch((error) => {
+          console.error("Error recovering employee: ", error);
+        });
+
+      // Also add back to local state
+      setEmployees((prevEmployees) => [...prevEmployees, tempEmployee]);
+    }
+
+    setVisible(false);
   };
 
   useEffect(() => {
@@ -94,6 +115,14 @@ const Home: React.FC<HomeNavigationProp> = ({ navigation }) => {
     }, 1500);
   }, []);
 
+  const navigateToStatistics = () => {
+    if (employees.length > 0) {
+      navigation.navigate("Statistics", { employees: employees });
+    } else {
+      Alert.alert("No employees yet.", "Add new employees to see statistics");
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.headerBox}>
@@ -113,7 +142,6 @@ const Home: React.FC<HomeNavigationProp> = ({ navigation }) => {
                 })
               }
               onLongPress={() => handleDeleteEmployee(item)}
-              
             >
               <Text style={styles.text}>
                 {item.name} {item.last_name} ({item.gender}), {item.age}
@@ -128,28 +156,20 @@ const Home: React.FC<HomeNavigationProp> = ({ navigation }) => {
 
       <View style={styles.footer}>
         <Snackbar
-          style={styles.snackbar}
           visible={visible}
-          onDismiss={onDismissSnackBar}
+          onDismiss={() => setVisible(false)}
+          style={styles.snackbar}
           action={{
-            textColor: Colors.darkBeige,
             label: "Undo",
-            onPress: () => {
-              setVisible(false);
-              setEmployees((prevEmployees) => [
-                ...prevEmployees,
-                tempEmployee!,
-              ]);
-            },
+            onPress: () => undoDelete(),
           }}
+          duration={2000} // This should match the timeout duration
         >
-          Accidentally deleted employee?
+          Employee deleted
         </Snackbar>
         <Pressable
           style={styles.roundButton}
-          onPress={() =>
-            navigation.navigate("Statistics", { employees: employees })
-          }
+          onPress={() => navigateToStatistics()}
         >
           <Iconn name="barschart" style={styles.plusIcon}></Iconn>
         </Pressable>
@@ -244,5 +264,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: Colors.darkBlue,
     textAlign: "center",
-  }
+  },
 });
