@@ -2,8 +2,11 @@
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
+## 1 Installation on Android device directly:
+To install the app on the android device directly, download employee-app.apk to your device and start using it.
+Application is still in development mode
 
-## Prerequisites
+## 2 Running the app from terminal using expo:
 
 Before you begin, ensure you have met the following requirements:
 - Node.js and npm/yarn installed (include version requirements if specific versions are needed)
