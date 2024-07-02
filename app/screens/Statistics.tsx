@@ -42,9 +42,12 @@ const Statistics: FC<StatisticsNavigationProp> = ({ route, navigation }) => {
         </Text>
       </View>
       <View style={styles.pieBox}>
-        <Text style={[styles.genderText, { width: "15%", marginLeft: "5%" }]}>
+        <View style={styles.percentageBox}>
+        <Text style={[styles.genderText]}>
           Men
         </Text>
+          <Text style={styles.percentageText}>{genderStats.males.toFixed(1)}%</Text>
+        </View>
         {dataReady ? (
           <Pressable
             onPress={() => {
@@ -65,9 +68,12 @@ const Statistics: FC<StatisticsNavigationProp> = ({ route, navigation }) => {
         ) : (
           <ActivityIndicator size="large" color={Colors.darkBlue} />
         )}
-        <Text style={[styles.genderText, { color: Colors.red, width: "20%" }]}>
+        <View style={styles.percentageBox}>
+        <Text style={[styles.genderText, { color: Colors.red, fontSize: 16 }]}>
           Women
         </Text>
+          <Text style={styles.percentageText}>{genderStats.females.toFixed(1)}%</Text>
+        </View>
       </View>
       <Pressable
         style={styles.roundButton}
@@ -126,7 +132,11 @@ const styles = StyleSheet.create({
   genderText: {
     fontSize: 18,
     color: Colors.yellow,
-    marginTop: 24,
+  },
+
+  percentageText: {
+    color: Colors.darkBlue,
+    fontSize: 16,
   },
 
   pieBox: {
@@ -142,4 +152,15 @@ const styles = StyleSheet.create({
     padding: 0,
     margin: 0,
   },
+
+  percentageBox: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Colors.lightBlue,
+    padding: 10,
+    borderRadius: 40,
+    height: 80,
+    width: 80,
+  }
 });

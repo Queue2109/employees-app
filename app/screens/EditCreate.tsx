@@ -66,10 +66,10 @@ const EditCreate: React.FC<EditCreateNavigationProp> = ({
       return;
     }
 
-    if (newEmployee.age < 15) {
+    if (newEmployee.age < 15 || newEmployee.age > 70) {
       Alert.alert(
         "Age Restriction",
-        "Employee is too young to be working! Employees must be 15 years or older."
+        "Employee's age must be between 15 and 64!"
       );
       return;
     }
