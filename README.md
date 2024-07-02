@@ -3,7 +3,7 @@
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
 ## 1 Installation on Android device directly:
-To install the app on the android device directly, download employee-app.apk to your device and start using it.
+To install the app on the android device directly, download employee-app.zip to your device, extract file and start using it.
 Application is still in development mode
 
 ## 2 Running the app from terminal using expo:
